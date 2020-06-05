@@ -40,7 +40,7 @@ type
   public
   painel : Tpanel;
   painel2 : Tpanel;
-  //lblNivel  : Tlabel;
+  //lNivel  : Tlabel;
   constructor Create(Panel1 : TPanel;   Panel2 : Tpanel);
   procedure MoveEsquerda;
   procedure MoveDireita;
@@ -240,11 +240,11 @@ procedure Tjogo.MoveCarroInimigo(Sender: TObject);
                  end;
 
 
-                  if verificaColisao(carro, TPanel(tela.Components[i])) or verificaColisao(carroDir, TPanel(tela.Components[i]))  or VerificaColisao(carroEsq, TPanel(tela.Components[i]))then
-                   begin
-                     bateu := true;
-                     ExibeBatida;
-                   end;
+                  //if verificaColisao(carro, TPanel(tela.Components[i])) or verificaColisao(carroDir, TPanel(tela.Components[i]))  or VerificaColisao(carroEsq, TPanel(tela.Components[i]))then
+                  // begin
+                    // bateu := true;
+                     //ExibeBatida;
+                   //end;
 
 
                //Se sair da tela volta pro topo
@@ -289,7 +289,7 @@ procedure Tjogo.MoveCarroInimigo(Sender: TObject);
 
 
 
- procedure TJogo.IncrementaNível(Sender: TObject);
+procedure TJogo.IncrementaNível(Sender: TObject);
 
    var i: Integer;
    begin

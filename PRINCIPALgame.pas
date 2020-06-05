@@ -16,6 +16,7 @@ type
     TVencedor: TTimer;
     Tnivel: TTimer;
     lblNivel: TLabel;
+    Tnivel2: TTimer;
     procedure FormCreate(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
@@ -23,6 +24,7 @@ type
     procedure TcreateTimer(Sender: TObject);
     procedure TVencedorTimer(Sender: TObject);
     procedure TnivelTimer(Sender: TObject);
+    procedure Tnivel2Timer(Sender: TObject);
     //procedure TAumentaTimer(Sender: TObject);
   private
     { Private declarations }
@@ -59,7 +61,8 @@ var i: integer;
 begin
 
 
-
+       lblNivel.Visible := false;
+       lblNivel.Parent := Panel1;
 
   jogo := Tjogo.Create(Panel1,Panel2);
   jogo.inicializar(Panel1, Panel2);
@@ -75,6 +78,8 @@ begin
       TVencedor.Interval := 40000;
       Tnivel.Enabled := true;
       Tnivel.Interval := 20000;
+      Tnivel2.Enabled := true;
+      Tnivel2.Interval := 21000;
 
 
 
@@ -129,11 +134,18 @@ begin
            jogo.CriaCacto(jogo);
 end;
 
+procedure TForm1.Tnivel2Timer(Sender: TObject);
+begin
+       lblNivel.Visible := false;
+end;
+
 procedure TForm1.TnivelTimer(Sender: TObject);
 begin
-            //colocar a funcao de nivel aq
+            lblNivel.Visible := true;
             jogo.IncrementaNível(jogo);
-            //procedure TJogo.IncrementaNível(Sender: TObject);
+
+
+
 
 end;
 procedure TForm1.Timer1Timer(Sender: TObject);

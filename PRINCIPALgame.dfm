@@ -71,4 +71,9 @@ object Form1: TForm1
     Left = 336
     Top = 224
   end
+  object Tnivel2: TTimer
+    OnTimer = Tnivel2Timer
+    Left = 240
+    Top = 224
+  end
 end
