@@ -64,20 +64,28 @@ begin
        lblNivel.Visible := false;
        lblNivel.Parent := Panel1;
 
-  jogo := Tjogo.Create(Panel1,Panel2);
-  jogo.inicializar(Panel1, Panel2);
+      jogo := Tjogo.Create(Panel1,Panel2);
+      jogo.inicializar(Panel1, Panel2);
 
-
+      //cria carros
       TCreate.Enabled := true;
       TCreate.Interval := 2000;
+
+      // Movimentar carros
       Timer1.Enabled := true;
       Timer1.Interval := 100;
-      TAumenta.Enabled := true;
-      TAumenta.Interval := 2000;
+
+
+
+      //Se não bater durante esse tempo aparece a linha de chegada
       TVencedor.Enabled:= true;
-      TVencedor.Interval := 40000;
+      TVencedor.Interval := 25000;
+
+      //quando começa o nivel 2
       Tnivel.Enabled := true;
       Tnivel.Interval := 20000;
+
+      //serve somente para apagar a escrita de nivel 2 da tela que deve durar um seg
       Tnivel2.Enabled := true;
       Tnivel2.Interval := 21000;
 
@@ -85,53 +93,12 @@ begin
 
 end;
 
-{
-procedure TForm1.TAumentaTimer(Sender: TObject);
-var i : integer;
-begin
-
-      for i := 0 to Panel1.ComponentCount-1 do
-        begin
-          if Panel1.Components[i] is Timage then
-          begin
-             if TPanel(Panel1.Components[i]).tag =1 then
-             begin
-
-
-               if(((TPanel(Panel1.Components[i]).Height) <= 91) and ((TPanel(Panel1.Components[i]).Width) <= 75))  then
-                 begin
-
-                  TPanel(Panel1.Components[i]).Height := TPanel(Panel1.Components[i]).Height+1;
-                  TPanel(Panel1.Components[i]).Width := TPanel(Panel1.Components[i]).Width +1;
-
-                 end;
-
-             end;
-
-          end;
-        end;
-
-
-
-
-
-
-
-
-
-end;
-
-
-
-
-}
-
 
 procedure TForm1.TcreateTimer(Sender: TObject);
 begin
 
            jogo.CriaCarroInimigo(jogo);
-           jogo.CriaCacto(jogo);
+
 end;
 
 procedure TForm1.Tnivel2Timer(Sender: TObject);
@@ -143,7 +110,7 @@ procedure TForm1.TnivelTimer(Sender: TObject);
 begin
             lblNivel.Visible := true;
             jogo.IncrementaNível(jogo);
-
+            jogo.CriaCacto(jogo);
 
 
 
@@ -152,7 +119,7 @@ procedure TForm1.Timer1Timer(Sender: TObject);
 
 begin
 
-          jogo.MoveCarroInimigo(jogo);
+          jogo.MoveCarroInimigo(jogo,Tnivel2,TCreate,Tnivel,Timer1);
 
 
 
@@ -162,8 +129,14 @@ end;
 
 procedure TForm1.TVencedorTimer(Sender: TObject);
 begin
-
+        form1.canvas.textOut(0,0, 'AAAAAAAAAAA');
+      //nao posso desabilitar pq os carros tem q sair da tela completamente
      //Timer1.Enabled := false;
+     TCreate.Enabled := false;
+     Tnivel.Enabled := false;
+     Tnivel2.Enabled := false;
+
+
 
 end;
 

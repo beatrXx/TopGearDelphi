@@ -14,6 +14,10 @@ type
   TMover      :TTimer;
   TNivel      :TTimer;
 
+  Tnivel2    : TTimer;
+  Tnivel22    :ttimer ;
+  tcreate     :ttimer;
+  timer1      :TTimer;
   count       :integer;
   bateu       :boolean;
   NumCarros   :integer;
@@ -26,6 +30,8 @@ type
   CarroDir    :TImage;
   CarroEsq    :TImage;
   Batida      :TImage;
+  count2 : Integer;
+  todosOsCarrosFora : boolean;
 
 
   function VerificaColisao(o1, o2: TControl) : boolean;
@@ -46,12 +52,12 @@ type
   procedure MoveDireita;
   procedure MoveCima;
   procedure inicializar(T:TwinControl; C: TWinControl);
-  procedure MoveCarroInimigo(Sender:TObject);
+  procedure MoveCarroInimigo(Sender:TObject; Tcreate: TTimer; Tnivel2 : TTimer; tnivel22 : TTimer; timer1 : TTimer);
   procedure CriaCarroInimigo(Sender:TObject);
   procedure IncrementaNível(Sender:TObject);
   procedure CriaCacto(Sender: TObject);
-
-  //procedure MoveCacto(Sender: TObject);
+  procedure CriaLinhaDeChegada();
+//  procedure MoveCacto(Sender: TObject);
 
   end;
 
@@ -84,6 +90,13 @@ implementation
     carroDir.Left :=  carroDir.Left-1;
     carroEsq.Left := carroEsq.Left-1;
 
+    if(carroEsq.Left < 0) then
+    begin
+        carroEsq.Left := 10;
+        carroDir.Left := 10;
+        carro.Left := 10;
+    end;
+
 
 
   end;
@@ -102,6 +115,17 @@ implementation
     carro.Left := carro.Left+1;
     carroDir.Left :=  carroDir.Left+1;
     carroEsq.Left := carroEsq.Left+1;
+
+     if(carroDir.Left >340) or (carroEsq.Left >340) or (carro.Left > 340) then
+    begin
+        carroEsq.Left := 330;
+        carroDir.Left := 330;
+        carro.Left := 330;
+    end;
+
+
+
+
 
 
   end;
@@ -133,7 +157,36 @@ procedure Tjogo.CriaCarroInimigo(Sender: TObject);
 
   end;
 
-{procedure MoveCacto(Sender: TObject);
+
+  procedure Tjogo.CriaLinhaDeChegada();
+    var lc: TImage;
+  begin
+
+
+      if not bateu  then
+
+        begin
+          lc          := timage.Create(tela);
+          lc.Parent   := tela;
+          lc.Picture.LoadFromFile('D:\Documentos\Sétimo Período\Delphi\TRABIGORtopgear\finishhh.png');
+          lc.Height  := 371;
+          lc.Width   := 355;
+          lc.Stretch := true;
+          lc.Visible := true;
+          lc.proportional := true;
+          lc.top := 0;
+
+         // lc.left := Random(tela.Width - 100);
+          lc.Left := 40;
+          lc.tag := 0;
+
+
+        end;
+
+  end;
+
+  {
+procedure MoveCacto(Sender: TObject);
   var i: integer;
   begin
  //MOVIMENTAR CACTOS
@@ -179,7 +232,7 @@ procedure Tjogo.CriaCarroInimigo(Sender: TObject);
 
 
 end;
-}
+ }
 
 procedure Tjogo.CriaCacto(Sender: TObject);
     var c: TImage;
@@ -209,12 +262,14 @@ procedure Tjogo.CriaCacto(Sender: TObject);
   end;
 
 
-procedure Tjogo.MoveCarroInimigo(Sender: TObject);
+procedure Tjogo.MoveCarroInimigo(Sender:TObject; Tcreate: TTimer; Tnivel2 : TTimer; tnivel22 : TTimer; timer1: TTimer);
 
    var
-    i : Integer;
+    i,j : Integer;
+
 
    begin
+
 
       if not bateu then
       begin
@@ -228,47 +283,78 @@ procedure Tjogo.MoveCarroInimigo(Sender: TObject);
 
 
 
-               TPanel(tela.Components[i]).Top := TPanel(tela.Components[i]).Top +3;
+                 TPanel(tela.Components[i]).Top := TPanel(tela.Components[i]).Top +3;
 
 
-               if ((TPanel(tela.Components[i]).Height) <= 91) and ((TPanel(tela.Components[i]).Width) <= 75) then
-                 begin
+                 if ((TPanel(tela.Components[i]).Height) <= 91) and ((TPanel(tela.Components[i]).Width) <= 75) then
+                   begin
 
-                 TPanel(tela.Components[i]).Height := TPanel(tela.Components[i]).Height+2;
-                 TPanel(tela.Components[i]).Width := TPanel(tela.Components[i]).Width +2;
-                  //Sleep(100);
-                 end;
-
-
-                  //if verificaColisao(carro, TPanel(tela.Components[i])) or verificaColisao(carroDir, TPanel(tela.Components[i]))  or VerificaColisao(carroEsq, TPanel(tela.Components[i]))then
-                  // begin
-                    // bateu := true;
-                     //ExibeBatida;
-                   //end;
+                   TPanel(tela.Components[i]).Height := TPanel(tela.Components[i]).Height+2;
+                   TPanel(tela.Components[i]).Width := TPanel(tela.Components[i]).Width +2;
+                    //Sleep(100);
+                   end;
 
 
-               //Se sair da tela volta pro topo
+                    //if verificaColisao(carro, TPanel(tela.Components[i])) or verificaColisao(carroDir, TPanel(tela.Components[i]))  or VerificaColisao(carroEsq, TPanel(tela.Components[i]))then
+                    // begin
+                      // bateu := true;
+                       //ExibeBatida;
+                     //end;
 
-               if ((TPanel(tela.Components[i])).Top > tela.Height)  then
-                begin
-                  count := count+1;
-                if(count<=20) then
-                begin
 
-                  Tpanel(tela.Components[i]).Top := 0;
-                  Tpanel(tela.Components[i]).Left := Random(tela.Width-30);
-                  Tpanel(tela.Components[i]).Width :=  55;
-                  Tpanel(tela.Components[i]).Height := 71;
+                 //Se sair da tela volta pro topo
 
-                  end
-                  else
+                 if ((TPanel(tela.Components[i])).Top > tela.Height)  then
                   begin
-                    //chegada.Visible := true;
-                    //COLOCAR IMAGEM AQUI
+                    count := count+1;
+                    if(count<=19) then
+                    begin
+
+                    Tpanel(tela.Components[i]).Top := 0;
+                    Tpanel(tela.Components[i]).Left := Random(tela.Width-30);
+                    Tpanel(tela.Components[i]).Width :=  55;
+                    Tpanel(tela.Components[i]).Height := 71;
+
+                    end
+                    else
+                    begin
+                      count2 := count2 +1
+                    end;
+
+
                   end;
-                end;
+
+                  if count2 > 100 then
+                  begin
+                      CriaLinhaDeChegada();
+                      Tnivel2.Enabled := false;
+                      Tnivel22.Enabled := false;
+                      Tcreate.Enabled := false;
+                      Timer1.Enabled := false;
+                  end;
+
+                  //fazer um for aqui para saber se cada componente q esta na tela ja saiu
+                  //das dimensoes dela
+                       {
+                        for j := 0 to tela.ComponentCount-1 do
+                        begin
+                        if(count>19) and (TPanel(tela.Components[j]).Top > tela.Height) then
+                          begin
+                             todosOsCarrosFora := true;
+                          end
+                          else
+                          if(count>19) then
+                          begin
+                          //jogo continua break;
+                           todosOsCarrosFora := false;
+                             break;
+                           //batida.Visible := true;
+                          end;
 
 
+                        end;
+
+                         }
 
 
 
@@ -279,10 +365,20 @@ procedure Tjogo.MoveCarroInimigo(Sender: TObject);
 
 
           end; //fim do for
+           {
+          if(todosOsCarrosFora = true) then
+                  begin
+                      //Se nao sair da tela mais entao chegou
+                      //mas vai ter um erro dos ultimos estarem saindo
+                      //chegada.Visible := true;
+                      //COLOCAR IMAGEM AQUI
+                      //desabilitar clocks
+                      CriaLinhaDeChegada();
+                      Tchegada.Enabled := false;
+                  end;
+               }
 
-
-
-        end;
+        end;//aqui fim do nao bateu
 
       end;
 
@@ -300,23 +396,10 @@ procedure TJogo.IncrementaNível(Sender: TObject);
         tPanel(tela).Color := rgb(139,69,19);
         tPanel(painel2).Color := rgb(218,165,32);
         nivel :=2;
-        {
-        for i := 0 to Tela.ComponentCount-1 do
-        begin
-          if Tela.Components[i] is TPanel then
-          begin
 
-               tPanel(tela).Color := rgb(54,54,54);
-
-
-          end;
-
-        end;
-        }
 
       end;
-          //if nivel > 10  then TMover.Interval := 1;
-          //inc(nivel);
+
 
 
 
@@ -331,7 +414,8 @@ procedure TJogo.inicializar(T: TWinControl; C: TWinControl);
       NumCacto := 0;
       nivel     :=1;
       count     :=0;
-
+      todosOsCarrosFora := false;
+       count2 := 0;
       //CarroDoJogador
 
        carro  := timage.Create(tela);
