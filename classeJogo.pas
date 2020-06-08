@@ -14,7 +14,7 @@ type
   TMover      :TTimer;
   TNivel      :TTimer;
 
-  Tnivel2    : TTimer;
+  Tnivel2     :TTimer;
   Tnivel22    :ttimer ;
   tcreate     :ttimer;
   timer1      :TTimer;
@@ -46,6 +46,7 @@ type
   public
   painel : Tpanel;
   painel2 : Tpanel;
+
   //lNivel  : Tlabel;
   constructor Create(Panel1 : TPanel;   Panel2 : Tpanel);
   procedure MoveEsquerda;
@@ -57,6 +58,7 @@ type
   procedure IncrementaNível(Sender:TObject);
   procedure CriaCacto(Sender: TObject);
   procedure CriaLinhaDeChegada();
+  procedure tocaMusica;
 //  procedure MoveCacto(Sender: TObject);
 
   end;
@@ -83,7 +85,7 @@ implementation
     carroDir.Visible:= false;
 
     carroEsq.Left := carro.Left;
-    carroEsq.Top := carro.Top;
+    carroEsq.Top := carro.Top; // +10;  //ESSE +10 PODE DAR ERRO NA PARTE DE COLISAO
     carroEsq.Visible := true;
 
     carro.Left := carro.Left-1;
@@ -109,7 +111,7 @@ implementation
     carro.Visible := false;
     carroEsq.Visible := false;
     carroDir.Left := carro.Left;
-    carroDir.Top := carro.Top;
+    carroDir.Top := carro.Top ; //+10; //ESSE +10 PODE DAR ERRO NA PARTE DE COLISAO
     carroDir.Visible:= true;
 
     carro.Left := carro.Left+1;
@@ -295,11 +297,14 @@ procedure Tjogo.MoveCarroInimigo(Sender:TObject; Tcreate: TTimer; Tnivel2 : TTim
                    end;
 
 
-                    //if verificaColisao(carro, TPanel(tela.Components[i])) or verificaColisao(carroDir, TPanel(tela.Components[i]))  or VerificaColisao(carroEsq, TPanel(tela.Components[i]))then
-                    // begin
-                      // bateu := true;
-                       //ExibeBatida;
-                     //end;
+                   if verificaColisao(carro, TPanel(tela.Components[i])) or verificaColisao(carroDir, TPanel(tela.Components[i]))  or VerificaColisao(carroEsq, TPanel(tela.Components[i]))then
+                     begin
+                       bateu := true;
+                       ExibeBatida;
+                       carro.Visible := false;
+                       carroEsq.Visible := false;
+                       carroDir.Visible := false;
+                     end;
 
 
                  //Se sair da tela volta pro topo
@@ -331,6 +336,7 @@ procedure Tjogo.MoveCarroInimigo(Sender:TObject; Tcreate: TTimer; Tnivel2 : TTim
                       Tnivel22.Enabled := false;
                       Tcreate.Enabled := false;
                       Timer1.Enabled := false;
+
                   end;
 
                   //fazer um for aqui para saber se cada componente q esta na tela ja saiu
@@ -384,7 +390,6 @@ procedure Tjogo.MoveCarroInimigo(Sender:TObject; Tcreate: TTimer; Tnivel2 : TTim
 
 
 
-
 procedure TJogo.IncrementaNível(Sender: TObject);
 
    var i: Integer;
@@ -417,7 +422,7 @@ procedure TJogo.inicializar(T: TWinControl; C: TWinControl);
       todosOsCarrosFora := false;
        count2 := 0;
       //CarroDoJogador
-
+       // tocaMusica;
        carro  := timage.Create(tela);
        carro.Parent := tela;
        carro.Picture.LoadFromFile('D:\Documentos\Sétimo Período\Delphi\TRABIGORtopgear\carrinho 01 png.png');
@@ -435,7 +440,7 @@ procedure TJogo.inicializar(T: TWinControl; C: TWinControl);
        carroDir  := timage.Create(tela);
        carroDir.Parent := tela;
        carroDir.Picture.LoadFromFile('D:\Documentos\Sétimo Período\Delphi\TRABIGORtopgear\carrinho 02 png.png');
-       carroDir.Height := 91;
+       carroDir.Height := 61;
        carroDir.Width := 75;
        carroDir.Stretch := true;
        //carroDir.Proportional := true;
@@ -447,7 +452,7 @@ procedure TJogo.inicializar(T: TWinControl; C: TWinControl);
        carroEsq  := timage.Create(tela);
        carroEsq.Parent := tela;
        carroEsq.Picture.LoadFromFile('D:\Documentos\Sétimo Período\Delphi\TRABIGORtopgear\carrinho 02 invertido png.png');
-       carroEsq.Height := 91;
+       carroEsq.Height := 61;
        carroEsq.Width := 75;
        carroEsq.Stretch := true;
        //carroEsq.Proportional := true;
@@ -483,7 +488,7 @@ procedure TJogo.inicializar(T: TWinControl; C: TWinControl);
 //     TNivel.OnTimer   := IncrementaNivel;
        TNivel.Enabled   := true;
 
-
+        tocaMusica;
 
 
 
@@ -559,14 +564,8 @@ function TJogo.VerificaColisao(o1: TControl; o2: TControl) : boolean;
 
 
 procedure TJogo.exibeBatida;
-    var tm : TMediaPlayer;
+
     begin
-       tm := TMediaPlayer.Create(tela);
-       tm.Parent := tela;
-       tm.Visible := false;
-       //tm.FileName :=    '';
-       //tm.Open;
-       //tm.Play;
 
        Batida.top := round(carro.top + carro.height /2) - round(Batida.Height/2);
        Batida.left := round(carro.left + carro.width /2) - round(Batida.width/2);
@@ -575,6 +574,20 @@ procedure TJogo.exibeBatida;
        carroDir.Visible := false;
        Batida.visible := true;
     end;
+
+
+
+
+procedure TJogo.tocaMusica;
+  var m : TMediaPlayer;
+  begin
+       m := TMediaPlayer.Create(tela);
+       m.Parent := tela;
+       m.Visible := false;
+       m.FileName := 'D:\Documentos\Sétimo Período\Delphi\TRABIGORtopgear\Musica.Mpeg';
+       m.Open;
+       m.Play;
+  end;
 
 
 
